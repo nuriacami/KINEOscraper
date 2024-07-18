@@ -1,2 +1,1 @@
-# KINEOwebscraper
- Web scraper to efficiently download data from MITMA KINEO tool
+per utilitzar user i pass: from config import USER_KEY, PASS_KEY
