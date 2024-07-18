@@ -1,2 +1,0 @@
-USER_KEY = 'la_teva_clau_api'
-PASS_KEY = 'el_teu_secret_api'
