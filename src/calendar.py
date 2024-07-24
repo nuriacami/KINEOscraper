@@ -1,6 +1,12 @@
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
 ######## Seleccionar data al selector
 
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
+
 def select_date(driver, date_picker_id, date_str):
     
     # Desglossar la data i l'hora del string d'entrada
