@@ -4,7 +4,7 @@
 import time
 from datetime import timedelta
 
-def print_elapsed_time():
+def print_elapsed_time(start_time):
     elapsed_time = time.time() - start_time
     formatted_time = str(timedelta(seconds = elapsed_time))
     print(f"Temps transcorregut: {formatted_time}")

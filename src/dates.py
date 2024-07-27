@@ -68,13 +68,13 @@ def select_date(driver, date_picker_id, date_str):
                 cell.click()
                 break
     
-    # Configura el rellotge de les hores, minuts i segons
-    time_picker = driver.find_element(By.ID, date_picker_id)
-    time_picker.click()
-    time_picker.send_keys(Keys.CONTROL + "a")
-    time_picker.send_keys(Keys.BACKSPACE)
-    time_picker.send_keys(f"{hour:02d}:{minute:02d}:{second:02d}")
+    # # Configura el rellotge de les hores, minuts i segons
+    # time_picker = driver.find_element(By.ID, date_picker_id)
+    # time_picker.click()
+    # time_picker.send_keys(Keys.CONTROL + "a")
+    # time_picker.send_keys(Keys.BACKSPACE)
+    # time_picker.send_keys(f"{hour:02d}:{minute:02d}:{second:02d}")
 
-    # Confirma la selecció de data mitjançant JavaScript per assegurar-se que es pot fer clic al botó
-    accept_button = driver.find_element(By.XPATH, accept_button_xpath)
-    driver.execute_script("arguments[0].click();", accept_button)
+    # # Confirma la selecció de data mitjançant JavaScript per assegurar-se que es pot fer clic al botó
+    # accept_button = driver.find_element(By.XPATH, accept_button_xpath)
+    # driver.execute_script("arguments[0].click();", accept_button)
