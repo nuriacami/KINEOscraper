@@ -1,4 +1,23 @@
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
+######## Get last 7 days
+from datetime import datetime, timedelta
+
+def get_week():
+    # Get today's date
+    today = datetime.now()
+    
+    # Generate the list of the last 7 days as datetime objects
+    week_dates = [today - timedelta(days=i) for i in range(8)]
+    
+    # Sort the list of datetime objects from the oldest to the newest
+    sorted_dates = sorted(week_dates)
+    
+    # Convert the sorted datetime objects to the desired string format
+    sorted_dates_str = [date.strftime('%d/%m/%Y') for date in sorted_dates]
+    
+    return sorted_dates_str
+    
+#------------------------------------------------------------------------------------------------------------------------------------------------------#
 ######## Date selector
 
 from selenium.webdriver.common.by import By
