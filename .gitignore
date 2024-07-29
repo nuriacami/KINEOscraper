@@ -161,3 +161,6 @@ cython_debug/
 
 # Configuració local
 config.py
+
+# Codi en brut
+old.py
