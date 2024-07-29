@@ -1,5 +1,5 @@
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
-######## Funció per mostrar el temps transcorregut
+######## Displaying elapsed time
 
 import time
 from datetime import timedelta
@@ -10,7 +10,7 @@ def print_elapsed_time(start_time):
     print(f"Temps transcorregut: {formatted_time}")
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
-######## Funció per verificar si el missatge "No hay datos para mostrar" està present
+######## Verify whether “"No hay datos para mostrar"” message is present
 
 from selenium.webdriver.common.by import By
 
