@@ -31,8 +31,6 @@ def select_dropdown_value(driver, input_id, dropdown_button_id, value):
 
         sleep(1) # necessari perquè el valor estigui visible
 
-        print(f"Valor seleccionat: {value}\n")
-
     except TimeoutException:
         print(f"TimeoutException: No es pot trobar l'opció amb el valor {value} en el menú desplegable.")
 
