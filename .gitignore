@@ -159,8 +159,5 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-# Configuració local
-config.py
-
-# Codi en brut
-old.py
+# Arxius privats
+private/
