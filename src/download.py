@@ -1,7 +1,5 @@
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
-'''
-Given a 'demarcacion' and a list of 'etd', download every "Informe por horas" Excel of the past week
-'''
+######## Given a 'demarcacion' and a list of 'etd', download every "Informe por horas" Excel of the past week
 
 def download_week(driver, demarcacion, etd):
 
