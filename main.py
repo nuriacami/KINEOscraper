@@ -24,15 +24,12 @@ login(driver,
       username = USER_KEY, 
       password = PASS_KEY)
 
-# go to "Informe por horas"
-driver.get('https://aforadores.mitma.es/contadorestraficofomento/InformePorHorasCalzadaCarrilAforo.aspx')
-
 
 # # 3. Make the requests and download data
 
 # ### AP7 BARCELONA SECTOR 4
 
-# In[7]:
+# In[ ]:
 
 
 from src.download import download_week
@@ -44,7 +41,7 @@ download_week(driver,
 
 # ### AP7 BARCELONA SECTOR 5
 
-# In[9]:
+# In[ ]:
 
 
 download_week(driver,
@@ -54,7 +51,7 @@ download_week(driver,
 
 # Exit driver
 
-# In[11]:
+# In[ ]:
 
 
 driver.quit()
@@ -62,7 +59,7 @@ driver.quit()
 
 # # 4. Move files to desired directory
 
-# In[13]:
+# In[ ]:
 
 
 from src.directory import move_to_directory
