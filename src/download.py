@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
-######## Given a 'demarcacion' and a list of 'etd', download every "Informe por horas" Excel of the past week
+######## Given a 'demarcacion' and a list of 'etd', download every "Informe por horas" Excel of the past X days
 
-def download_week(driver, demarcacion, etd):
+def download_data(driver, demarcacion, etd, option = 'day'):
 
     # go to "Informe por horas"
     driver.get('https://aforadores.mitma.es/contadorestraficofomento/InformePorHorasCalzadaCarrilAforo.aspx')
@@ -14,7 +14,7 @@ def download_week(driver, demarcacion, etd):
                       dropdown_button_id = "ctl00_ContentPlaceHolderDatos_CbDemarcacion_B-1",
                       value = demarcacion)
 
-    from src.dates import get_week, select_date
+    from src.dates import get_days, select_date
     from src.button import click_button, download_excel
     from src.utils import print_elapsed_time, check_no_data_message
     from selenium.webdriver.support.ui import WebDriverWait
@@ -23,9 +23,15 @@ def download_week(driver, demarcacion, etd):
     from selenium.common.exceptions import TimeoutException
     from selenium.webdriver.common.keys import Keys
     from time import sleep
-    
-    # Get days of the past week
-    week = get_week()
+    import datetime
+
+    # Get days depending on parameter 'option'
+    if option == 'day':
+        days = get_days(1+1)
+    elif option == 'week':
+        days = get_days(7+1)
+    elif option == 'year':
+        days = get_days(datetime.datetime.now().timetuple().tm_yday + 1)
 
     for value_to_select_etd in etd:
 
@@ -38,16 +44,16 @@ def download_week(driver, demarcacion, etd):
         sleep(1)
 
         # For every day
-        for i in range(len(week) - 1):
+        for i in range(len(days) - 1):
 
             # Initial/End date selector
             select_date(driver,
                         date_picker_id = 'LbFechaInicio_I',
-                        date_str = f'{week[i]} 00:00:00')
+                        date_str = f'{days[i]} 00:00:00')
             
             select_date(driver,
                         date_picker_id = 'LbFechaFin_I',
-                        date_str = f'{week[i + 1]} 00:00:00')
+                        date_str = f'{days[i + 1]} 00:00:00')
             
             sleep(1)
         

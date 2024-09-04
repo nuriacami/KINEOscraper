@@ -1,16 +1,16 @@
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
-######## Get last 7 days
+######## Get last n days
 from datetime import datetime, timedelta
 
-def get_week():
+def get_days(n):
     # Get today's date
     today = datetime.now()
     
-    # Generate the list of the last 7 days as datetime objects
-    week_dates = [today - timedelta(days=i) for i in range(8)]
+    # Generate the list of the last n days as datetime objects
+    dates = [today - timedelta(days=i) for i in range(n)]
     
     # Sort the list of datetime objects from the oldest to the newest
-    sorted_dates = sorted(week_dates)
+    sorted_dates = sorted(dates)
     
     # Convert the sorted datetime objects to the desired string format
     sorted_dates_str = [date.strftime('%d/%m/%Y') for date in sorted_dates]

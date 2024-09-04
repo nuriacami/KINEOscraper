@@ -6,6 +6,8 @@
 # In[2]:
 
 
+import sys
+sys.path.append("../../")
 from src.driver import setup_driver
 driver = setup_driver()
 
@@ -27,26 +29,16 @@ login(driver,
 
 # # 3. Make the requests and download data
 
-# ### AP7 BARCELONA SECTOR 4
-
 # In[ ]:
 
 
 from src.download import download_week
+from input.values import VALUES
 
-download_week(driver,
-              demarcacion = "AP7 BARCELONA SECTOR 4",
-              etd = ['AP7-125+650-100270000000', 'AP7-129+500-100280000000', 'AP7-134+050-100290000000'])
-
-
-# ### AP7 BARCELONA SECTOR 5
-
-# In[ ]:
-
-
-download_week(driver,
-              demarcacion = "AP7 BARCELONA SECTOR 5",
-              etd = ['AP7-173+000-100430000000'])
+for values in VALUES:
+    download_week(driver, 
+                  demarcacion = values["demarcacion"],
+                  etd = values["etd"])
 
 
 # Exit driver
