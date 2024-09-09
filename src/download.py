@@ -34,13 +34,13 @@ def download_data(driver, demarcacion, etd, option = 'day'):
         days = get_days(datetime.datetime.now().timetuple().tm_yday + 1)
 
     for value_to_select_etd in etd:
-
+        print(value_to_select_etd)
         # Select 'ETD' value
         select_dropdown_value(driver,
                               input_id = 'ctl00_ContentPlaceHolderDatos_CbEtd_I',
                               dropdown_button_id = 'ctl00_ContentPlaceHolderDatos_CbEtd_B-1',
                               value = value_to_select_etd)
-
+        print("he seleccionat la etd")
         sleep(1)
 
         # For every day
@@ -64,14 +64,14 @@ def download_data(driver, demarcacion, etd, option = 'day'):
                                   value = "CARRIL")
         
             sleep(1)
-
+            print("he seleccionat data i desglose")
             # Scroll to the top of the page
             driver.execute_script("window.scrollTo(0, 0);")
-
+            print("faig scroll")
             # Click 'Ver' button
             click_button(driver, 
                          button_id = "ctl00_ContentPlaceHolderDatos_BtVerListado_I")
-        
+            print("clico ver")
             # Wait for "LoadingPanel" to appear
             sleep(2)
         
@@ -86,7 +86,7 @@ def download_data(driver, demarcacion, etd, option = 'day'):
                     break
         
             sleep(2)
-        
+            print("taula creada")
             # While message "No hay datos para mostrar" is not shown, Excel will be downloaded
             if not check_no_data_message(driver):
 
@@ -102,3 +102,5 @@ def download_data(driver, demarcacion, etd, option = 'day'):
             else:
                 # Print message when the ETD has no data
                 print(f"La ETD {value_to_select_etd} no conté dades a la seva taula. No es baixarà cap document Excel.")
+
+            print("baixada feta")

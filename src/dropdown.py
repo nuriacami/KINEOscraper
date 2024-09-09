@@ -137,8 +137,8 @@ def get_all_combinations(driver, demarcacion_dropdown_id, etd_dropdown_id, outpu
         # Close the dropdown
         etd_button.click()
 
-        # Convert the set to a list and sort it
-        etd_values = sorted(list(etd_set))
+        # Convert the set to a list
+        etd_values = list(etd_set)
         return etd_values
 
     def write_to_file(data):
@@ -181,3 +181,42 @@ def get_all_combinations(driver, demarcacion_dropdown_id, etd_dropdown_id, outpu
 
 
            
+    # def get_etd_values():
+    #     etd_button = WebDriverWait(driver, 10).until(
+    #         EC.element_to_be_clickable((By.ID, etd_dropdown_id))
+    #     )
+    #     etd_button.click()
+
+    #     etd_options_xpath = "//td[contains(@class, 'dxeListBoxItem')]"
+    #     options_container_xpath = "//div[@id='ctl00_ContentPlaceHolderDatos_CbEtd_DDD_L_D']"
+
+    #     etd_container = WebDriverWait(driver, 10).until(
+    #         EC.presence_of_element_located((By.XPATH, options_container_xpath))
+    #     )
+
+    #     # Create a list to store the etd options while maintaining the order
+    #     etd_list = []
+
+    #     # Scroll and collect options until no more new options appear
+    #     last_height = driver.execute_script("return arguments[0].scrollHeight", etd_container)
+    #     while True:
+    #         # Collect currently visible options
+    #         etd_elements = driver.find_elements(By.XPATH, etd_options_xpath)
+    #         for option in etd_elements:
+    #             text = option.text.strip()
+    #             if text != '' and text not in etd_list:  # Ensure no duplicates
+    #                 etd_list.append(text)  # Use append for lists
+
+    #         # Scroll to the end of the container to load new options
+    #         driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight", etd_container)
+    #         time.sleep(1)
+
+    #         new_height = driver.execute_script("return arguments[0].scrollHeight", etd_container)
+    #         if new_height == last_height:
+    #             break
+    #         last_height = new_height
+
+    #     # Close the dropdown
+    #     etd_button.click()
+
+    #     return etd_list
