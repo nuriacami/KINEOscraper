@@ -7,6 +7,7 @@ def download_data(driver, demarcacion, etd, option = 'day'):
     driver.get('https://aforadores.mitma.es/contadorestraficofomento/InformePorHorasCalzadaCarrilAforo.aspx')
 
     from src.dropdown import select_dropdown_value
+    from src.dropdown import select_dropdown_value2
 
     # Select 'Demarcacion' value
     select_dropdown_value(driver, 
@@ -36,7 +37,7 @@ def download_data(driver, demarcacion, etd, option = 'day'):
     for value_to_select_etd in etd:
         print(value_to_select_etd)
         # Select 'ETD' value
-        select_dropdown_value(driver,
+        select_dropdown_value2(driver,
                               input_id = 'ctl00_ContentPlaceHolderDatos_CbEtd_I',
                               dropdown_button_id = 'ctl00_ContentPlaceHolderDatos_CbEtd_B-1',
                               value = value_to_select_etd)

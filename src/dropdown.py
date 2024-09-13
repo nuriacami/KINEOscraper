@@ -10,7 +10,7 @@ from time import sleep
 ######## Select value from dropdown menu
 
 def select_dropdown_value(driver, input_id, dropdown_button_id, value):
-    
+
     # Find and click the arrow to open the dropdown menu
     dropdown_button = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.ID, dropdown_button_id))
@@ -19,12 +19,13 @@ def select_dropdown_value(driver, input_id, dropdown_button_id, value):
 
     # Wait for the options to be available and select the value
     options_xpath = f"//td[contains(@class, 'dxeListBoxItem') and text()='{value}']"
-    
+
+
     try:
         option_to_select = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.XPATH, options_xpath))
         )
-        
+
         # Ensure the element is in the viewport before clicking
         driver.execute_script("arguments[0].scrollIntoView(true);", option_to_select)        
         ActionChains(driver).move_to_element(option_to_select).click().perform()
@@ -32,6 +33,38 @@ def select_dropdown_value(driver, input_id, dropdown_button_id, value):
         sleep(1) # necessary to make sure the value is visible
 
     except TimeoutException:
+        print(f"TimeoutException: Could not find the option with value {value} in the dropdown menu.")
+
+def select_dropdown_value2(driver, input_id, dropdown_button_id, value):
+    # Obrir el desplegable
+    dropdown_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, dropdown_button_id))
+    )
+    dropdown_button.click()
+
+    options_xpath = f"//td[contains(@class, 'dxeListBoxItem') and text()='{value}']"
+
+    scroll_attempts = 5  # Nombre d'intents per desplaçar-se per la llista
+
+    for attempt in range(scroll_attempts):
+        try:
+            option_to_select = WebDriverWait(driver, 5).until(
+                EC.presence_of_element_located((By.XPATH, options_xpath))
+            )
+            
+            driver.execute_script("arguments[0].scrollIntoView(true);", option_to_select)
+            ActionChains(driver).move_to_element(option_to_select).click().perform()
+            
+            sleep(1)  # Espera per assegurar que es selecciona correctament
+            
+            break  # Si l'opció es troba i es selecciona, surt del bucle
+        except TimeoutException:
+            # Si no troba l'opció, fem *scroll* cap avall per veure si apareixen més elements
+            dropdown_container = driver.find_element(By.ID, 'ctl00_ContentPlaceHolderDatos_CbEtd_DDD_L_D')
+            driver.execute_script("arguments[0].scrollBy(0, 100);", dropdown_container)
+            sleep(1)  # Espera per donar temps al carregament dels elements
+    else:
+        # Si després dels intents no trobem l'opció, llença un error
         print(f"TimeoutException: Could not find the option with value {value} in the dropdown menu.")
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -177,96 +210,3 @@ def get_all_combinations(driver, demarcacion_dropdown_id, etd_dropdown_id, outpu
 
     # Write the contents of the 'all_combinations' list to the file in the correct format
     write_to_file(all_combinations)
-
-
-# PROPOSTA INICIAL: retorna tots els valors però no ordenats
-# # Get all available options in the 'etd' dropdown for a specific 'demarcacion'
-#     def get_etd_values():
-#         etd_button = WebDriverWait(driver, 10).until(
-#             EC.element_to_be_clickable((By.ID, etd_dropdown_id))
-#         )
-#         etd_button.click()
-
-#         etd_options_xpath = "//td[contains(@class, 'dxeListBoxItem')]"
-#         options_container_xpath = "//div[@id='ctl00_ContentPlaceHolderDatos_CbEtd_DDD_L_D']"
-
-#         etd_container = WebDriverWait(driver, 10).until(
-#             EC.presence_of_element_located((By.XPATH, options_container_xpath))
-#         )
-
-#         # Create a set to store all the found etd options
-#         etd_set = set()
-
-#         # Scroll and collect options until no more new options appear
-#         last_height = driver.execute_script("return arguments[0].scrollHeight", etd_container)
-#         while True:
-#             # Collect currently visible options
-#             etd_elements = driver.find_elements(By.XPATH, etd_options_xpath)
-#             for option in etd_elements:
-#                 text = option.text.strip()
-#                 if text != '':
-#                     etd_set.add(text)
-
-#             # Scroll to the end of the container to load new options
-#             driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight", etd_container)
-#             time.sleep(1)
-
-#             # Re-read the currently visible options after scrolling
-#             etd_elements = driver.find_elements(By.XPATH, etd_options_xpath)
-#             for option in etd_elements:
-#                 text = option.text.strip()
-#                 if text != '':
-#                     etd_set.add(text)
-
-#             new_height = driver.execute_script("return arguments[0].scrollHeight", etd_container)
-#             if new_height == last_height:
-#                 break
-#             last_height = new_height
-
-#         # Close the dropdown
-#         etd_button.click()
-
-#         # Convert the set to a list
-#         etd_values = list(etd_set)
-#         return etd_values
-
-# PROPOSTA CHATGPT: valors ordenats però falten valors           
-    # def get_etd_values():
-    #     etd_button = WebDriverWait(driver, 10).until(
-    #         EC.element_to_be_clickable((By.ID, etd_dropdown_id))
-    #     )
-    #     etd_button.click()
-
-    #     etd_options_xpath = "//td[contains(@class, 'dxeListBoxItem')]"
-    #     options_container_xpath = "//div[@id='ctl00_ContentPlaceHolderDatos_CbEtd_DDD_L_D']"
-
-    #     etd_container = WebDriverWait(driver, 10).until(
-    #         EC.presence_of_element_located((By.XPATH, options_container_xpath))
-    #     )
-
-    #     # Create a list to store the etd options while maintaining the order
-    #     etd_list = []
-
-    #     # Scroll and collect options until no more new options appear
-    #     last_height = driver.execute_script("return arguments[0].scrollHeight", etd_container)
-    #     while True:
-    #         # Collect currently visible options
-    #         etd_elements = driver.find_elements(By.XPATH, etd_options_xpath)
-    #         for option in etd_elements:
-    #             text = option.text.strip()
-    #             if text != '' and text not in etd_list:  # Ensure no duplicates
-    #                 etd_list.append(text)  # Use append for lists
-
-    #         # Scroll to the end of the container to load new options
-    #         driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight", etd_container)
-    #         time.sleep(1)
-
-    #         new_height = driver.execute_script("return arguments[0].scrollHeight", etd_container)
-    #         if new_height == last_height:
-    #             break
-    #         last_height = new_height
-
-    #     # Close the dropdown
-    #     etd_button.click()
-
-    #     return etd_list
