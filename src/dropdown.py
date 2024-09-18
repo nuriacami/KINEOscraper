@@ -9,8 +9,8 @@ from time import sleep
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
 ######## Select value from dropdown menu
 
-def select_dropdown_value(driver, input_id, dropdown_button_id, value):
-
+def select_dropdown_value(driver, dropdown_button_id, dropdown_container_id, value):
+    
     # Find and click the arrow to open the dropdown menu
     dropdown_button = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.ID, dropdown_button_id))
@@ -20,31 +20,7 @@ def select_dropdown_value(driver, input_id, dropdown_button_id, value):
     # Wait for the options to be available and select the value
     options_xpath = f"//td[contains(@class, 'dxeListBoxItem') and text()='{value}']"
 
-
-    try:
-        option_to_select = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, options_xpath))
-        )
-
-        # Ensure the element is in the viewport before clicking
-        driver.execute_script("arguments[0].scrollIntoView(true);", option_to_select)        
-        ActionChains(driver).move_to_element(option_to_select).click().perform()
-
-        sleep(1) # necessary to make sure the value is visible
-
-    except TimeoutException:
-        print(f"TimeoutException: Could not find the option with value {value} in the dropdown menu.")
-
-def select_dropdown_value2(driver, input_id, dropdown_button_id, value):
-    # Obrir el desplegable
-    dropdown_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.ID, dropdown_button_id))
-    )
-    dropdown_button.click()
-
-    options_xpath = f"//td[contains(@class, 'dxeListBoxItem') and text()='{value}']"
-
-    scroll_attempts = 5  # Nombre d'intents per desplaçar-se per la llista
+    scroll_attempts = 5  # Number of attempts to scroll through the list
 
     for attempt in range(scroll_attempts):
         try:
@@ -52,20 +28,21 @@ def select_dropdown_value2(driver, input_id, dropdown_button_id, value):
                 EC.presence_of_element_located((By.XPATH, options_xpath))
             )
             
+            # Ensure the element is in the viewport before clicking
             driver.execute_script("arguments[0].scrollIntoView(true);", option_to_select)
             ActionChains(driver).move_to_element(option_to_select).click().perform()
             
-            sleep(1)  # Espera per assegurar que es selecciona correctament
+            sleep(1)  # necessary to make sure the value is visible
             
-            break  # Si l'opció es troba i es selecciona, surt del bucle
+            break  # If the option is found and selected, exit the loop
         except TimeoutException:
-            # Si no troba l'opció, fem *scroll* cap avall per veure si apareixen més elements
-            dropdown_container = driver.find_element(By.ID, 'ctl00_ContentPlaceHolderDatos_CbEtd_DDD_L_D')
+            # If the option is not found, scroll down to see if more elements appear
+            dropdown_container = driver.find_element(By.ID, dropdown_container_id)
             driver.execute_script("arguments[0].scrollBy(0, 100);", dropdown_container)
-            sleep(1)  # Espera per donar temps al carregament dels elements
+            sleep(1)  # necessary to make sure the value is visible
     else:
-        # Si després dels intents no trobem l'opció, llença un error
-        print(f"TimeoutException: Could not find the option with value {value} in the dropdown menu.")
+        # If after all attempts the option is not found, raise an error
+        print(f"TimeoutException: Could not find etd {value} in the dropdown menu.")
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
 ######## Get all value combinations from two dropdown menus
@@ -202,11 +179,12 @@ def get_all_combinations(driver, demarcacion_dropdown_id, etd_dropdown_id, outpu
         # Capture the ETD values for this 'demarcacion'
         etd_values = get_etd_values()
 
-        # Add the combination to the all_combinations list
-        all_combinations.append({
-            "demarcacion": demarcacion,
-            "etd": etd_values
-        })
+        # Add every combination of 'demarcation' and 'etd' values
+        for etd_value in etd_values:
+            all_combinations.append({
+                "demarcacion": demarcacion,
+                "etd": [etd_value]
+            })
 
     # Write the contents of the 'all_combinations' list to the file in the correct format
     write_to_file(all_combinations)
