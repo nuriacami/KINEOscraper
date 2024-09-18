@@ -32,6 +32,8 @@ def download_data(driver, demarcacion, etd, option = 'day'):
         days = get_days(7+1)
     elif option == 'year':
         days = get_days(datetime.datetime.now().timetuple().tm_yday + 1)
+    elif option == 'free':
+        days = get_days(17+1)
 
     for value_to_select_etd in etd:
 
