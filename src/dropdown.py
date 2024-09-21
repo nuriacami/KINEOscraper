@@ -155,7 +155,8 @@ def get_all_combinations(driver, demarcacion_dropdown_id, etd_dropdown_id, outpu
                 # Add a blank line before writing the vector
                 f.write("\n")  
                 f.write(f"VALUES = {data}\n")
-                
+    
+    i = 1            
     # Capture all values from the 'demarcacion' dropdown
     demarcacion_values = get_demarcacion_values()
 
@@ -185,6 +186,8 @@ def get_all_combinations(driver, demarcacion_dropdown_id, etd_dropdown_id, outpu
                 "demarcacion": demarcacion,
                 "etd": [etd_value]
             })
+            print(i)
+            i = i + 1
 
     # Write the contents of the 'all_combinations' list to the file in the correct format
     write_to_file(all_combinations)
