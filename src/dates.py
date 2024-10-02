@@ -16,9 +16,33 @@ def get_days(n):
     sorted_dates_str = [date.strftime('%d/%m/%Y') for date in sorted_dates]
     
     return sorted_dates_str
+
+def get_dates_between(start_date_str, end_date_str):
+    # Convertir les dates passades com a string a objectes datetime
+    start_date = datetime.strptime(start_date_str, '%d/%m/%Y')
+    end_date = datetime.strptime(end_date_str, '%d/%m/%Y')
+    
+    # Asegurar que la data inicial sigui la més antiga
+    if start_date > end_date:
+        start_date, end_date = end_date, start_date
+    
+    # Generar la llista de les dates entre les dues dates donades, incloent-hi el començament i el final
+    num_days = (end_date - start_date).days
+    dates = [start_date + timedelta(days=i) for i in range(num_days + 1)]
+    
+    # Convertir els objectes datetime al format desitjat
+    dates_str = [date.strftime('%d/%m/%Y') for date in dates]
+    
+    return dates_str
     
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
 ######## Date selector
+
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -52,8 +76,28 @@ def select_date(driver, date_picker_id, date_str):
     )
     
     #--- Navigate to the desired month and year
+    max_attempts = 5  # Maximum number of attempts to wait for the text
+    attempt = 0
+    last_valid_month_year = None
+
     while True:
-        displayed_month_year = driver.find_element(By.ID, calendar_title_id).text
+        # Try to get the value of month/year with a maximum number of attempts
+        while attempt < max_attempts:
+            displayed_month_year = driver.find_element(By.ID, calendar_title_id).text
+            if displayed_month_year.strip():  # Check that the text is not empty
+                last_valid_month_year = displayed_month_year  # Update the last valid value
+                break
+            time.sleep(1)  # Wait before trying again
+            attempt += 1
+        
+        # If after the attempts the text is still empty, use the last valid value
+        if not displayed_month_year.strip():
+            if last_valid_month_year is not None:
+                displayed_month_year = last_valid_month_year
+            else:
+                raise ValueError("Could not find a valid value for the calendar title.")
+
+        # Now that we have a valid text, proceed with the split
         displayed_month, displayed_year = displayed_month_year.split(' de ')
         displayed_month = {
             "enero": 1, "febrero": 2, "marzo": 3, "abril": 4,
@@ -92,7 +136,7 @@ def select_date(driver, date_picker_id, date_str):
                 break
             # If it appears more than once, follow the conditions based on the value of day
             elif day_count > 1:
-                # For day <=15, click on the first occurrence
+                # For day <= 15, click on the first occurrence
                 if day <= 15 and match_count == 1:
                     cell.click()
                     break
