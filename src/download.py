@@ -17,7 +17,7 @@ def download_data(driver, demarcacion, etd, option='day'):
     from src.dropdown import select_dropdown_value
     from src.dates import get_days, get_dates_between, select_date
     from src.button import click_button, download_excel
-    from src.utils import print_elapsed_time, check_no_data_message
+    from src.utils import print_elapsed_time, check_no_data_message, is_page_blocked
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.support import expected_conditions as EC
     from selenium.webdriver.common.by import By
@@ -25,15 +25,6 @@ def download_data(driver, demarcacion, etd, option='day'):
     from selenium.webdriver.common.keys import Keys
     from time import sleep
     import datetime
-
-    # Define a function to check for the blocked page
-    def is_page_blocked(driver):
-        try:
-            # Detect if the blocked message is present
-            blocked_message = driver.find_element(By.XPATH, "//h1[contains(text(),'ATENCIÓN - Página web bloqueada')]")
-            return blocked_message is not None
-        except:
-            return False
 
     # Get days depending on parameter 'option'
     if option == 'day':
