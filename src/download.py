@@ -56,6 +56,7 @@ def download_data(driver, demarcacion, etd, option='day'):
             max_retries = 5  # Set a maximum number of retries to avoid infinite loops
 
             while retry_count < max_retries:
+
                 try:
                     # Initial/End date selector
                     select_date(driver,
