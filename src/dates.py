@@ -1,8 +1,42 @@
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
-######## Get last n days
+#--------------------------------------------------------------------- POR MINUTOS --------------------------------------------------------------------#
+#------------------------------------------------------------------------------------------------------------------------------------------------------#
+######## Get last n days by hours
+
 from datetime import datetime, timedelta
 
+def get_hours(n):
+    # Today's date at 00:00
+    today = datetime.now()
+    today_00 = datetime(today.year, today.month, today.day)
+
+    # Calculate the starting point: `n` days before today
+    start_time = today_00 - timedelta(days=n)
+
+    # Generate a list of hours from `start_time` to `today_00 + 1 hour`
+    hours = []
+    current_time = start_time
+    while current_time <= today_00:
+        hours.append(current_time.strftime("%d/%m/%Y %H:%M:%S"))
+        current_time += timedelta(hours=1)
+
+    return hours
+
+#------------------------------------------------------------------------------------------------------------------------------------------------------#
+######## Get days between two dates by hours
+
+#################
+
+#------------------------------------------------------------------------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------- POR HORAS ---------------------------------------------------------------------#
+#------------------------------------------------------------------------------------------------------------------------------------------------------#
+######## Get last n days
+
 def get_days(n):
+
+    # Increment number of days in 1
+    n = n + 1 
+
     # Get today's date
     today = datetime.now()
     
@@ -11,30 +45,39 @@ def get_days(n):
     
     # Sort the list of datetime objects from the oldest to the newest
     sorted_dates = sorted(dates)
-    
+
     # Convert the sorted datetime objects to the desired string format
-    sorted_dates_str = [date.strftime('%d/%m/%Y') for date in sorted_dates]
-    
+    sorted_dates_str = [date.strftime('%d/%m/%Y 00:00:00') for date in sorted_dates]
+
     return sorted_dates_str
 
-def get_dates_between(start_date_str, end_date_str):
-    # Convertir les dates passades com a string a objectes datetime
+#------------------------------------------------------------------------------------------------------------------------------------------------------#
+######## Get days between two dates
+
+def get_days_between(start_date_str, end_date_str):
+
+    # Increment one day end_date_str
+    end_date = datetime.strptime(end_date_str, '%d/%m/%Y') + timedelta(days=1)
+    end_date_str = end_date.strftime('%d/%m/%Y')
+
+    # Convert the dates passed as strings to datetime objects
     start_date = datetime.strptime(start_date_str, '%d/%m/%Y')
     end_date = datetime.strptime(end_date_str, '%d/%m/%Y')
     
-    # Asegurar que la data inicial sigui la més antiga
+    # Ensure the start date is the earlier date
     if start_date > end_date:
         start_date, end_date = end_date, start_date
     
-    # Generar la llista de les dates entre les dues dates donades, incloent-hi el començament i el final
+    # Generate the list of dates between the given start and end dates, inclusive
     num_days = (end_date - start_date).days
     dates = [start_date + timedelta(days=i) for i in range(num_days + 1)]
     
-    # Convertir els objectes datetime al format desitjat
-    dates_str = [date.strftime('%d/%m/%Y') for date in dates]
-    
+    # Convert the datetime objects to the desired format
+    dates_str = [date.strftime('%d/%m/%Y 00:00:00') for date in dates]
+
     return dates_str
-    
+
+########################################################################################################################################################
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
 ######## Date selector
 

@@ -1,20 +1,22 @@
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
-######## Given a 'demarcacion' and a list of 'etd', download every "Informe por horas" Excel of the past X days
+######## Given a 'demarcacion' and a list of 'etd', download every hour/day Excel 
 
-def download_data(driver, demarcacion, etd, option='day'):
+def download_data(driver, demarcacion, etd, option='por_horas'):
 
-    # Go to "Informe por horas"
-    driver.get('https://aforadores.mitma.es/contadorestraficofomento/InformePorHorasCalzadaCarrilAforo.aspx')
+    if option == 'por_minutos':
+        # Go to Aforos < Informes < Volumen Tráfico Agrupado
+        driver.get('https://aforadores.mitma.es/contadorestraficofomento/InformeVolumenTraficoAgrupadoAforo.aspx')
+    elif option == 'por_horas': 
+        # Go to Aforos < Informes < Volumen Medio por Horas
+        driver.get('https://aforadores.mitma.es/contadorestraficofomento/InformePorHorasCalzadaCarrilAforo.aspx')
 
     from src.dropdown import select_dropdown_value
-
     # Select 'Demarcacion' value
     select_dropdown_value(driver, 
                       dropdown_button_id = "ctl00_ContentPlaceHolderDatos_CbDemarcacion_B-1",
                       dropdown_container_id = 'ctl00_ContentPlaceHolderDatos_CbDemarcacion_DDD_L_D',
                       value = demarcacion)
 
-    from src.dropdown import select_dropdown_value
     from src.dates import get_days, get_dates_between, select_date
     from src.button import click_button, download_excel
     from src.utils import print_elapsed_time, check_no_data_message, is_page_blocked
@@ -26,18 +28,19 @@ def download_data(driver, demarcacion, etd, option='day'):
     from time import sleep
     import datetime
 
-    # Get days depending on parameter 'option'
-    if option == 'day':
-        days = get_days(1 + 1)
-    elif option == 'week':
-        days = get_days(7 + 1)
-    elif option == 'year':
-        days = get_days(datetime.datetime.now().timetuple().tm_yday + 1)
-    elif option == 'free':
-        #days = get_days(30 + 1)
-        start = '01/09/2024'
-        end = '01/10/2024'
-        days = get_dates_between(start, end)
+    # Get dates depending on parameter 'option'
+    if option == 'por_minutos':
+        start = '01/11/2024' # descarregar un interval concret
+        send = '07/11/2024'
+        dates = get_hours_between(start, end)
+    elif option == 'por_horas':
+        # dates = get_days(1) # descarregar 1 dia
+        # dates = get_days(7) # descarregar 1 setmana
+        # dates = get_days(datetime.datetime.now().timetuple().tm_yday + 1) # descarrgar 1 any sencer
+        # dates = get_days(30) # descarregar els últims 30 dies
+        # start = '01/09/2024' # descarregar un interval concret
+        # end = '30/09/2024'
+        # dates = get_days_between(start, end) 
 
     for value_to_select_etd in etd:
 
@@ -49,8 +52,8 @@ def download_data(driver, demarcacion, etd, option='day'):
 
         sleep(1)
 
-        # For every day
-        for i in range(len(days) - 1):
+        # For every date
+        for i in range(len(dates) - 1):
 
             retry_count = 0
             max_retries = 5  # Set a maximum number of retries to avoid infinite loops
@@ -61,19 +64,26 @@ def download_data(driver, demarcacion, etd, option='day'):
                     # Initial/End date selector
                     select_date(driver,
                                 date_picker_id='LbFechaInicio_I',
-                                date_str=f'{days[i]} 00:00:00')
+                                date_str=dates[i])
 
                     select_date(driver,
                                 date_picker_id='LbFechaFin_I',
-                                date_str=f'{days[i + 1]} 00:00:00')
+                                date_str=dates[i + 1])
 
                     sleep(1)
 
-                    # Select 'Desglose' value
-                    select_dropdown_value(driver,
-                                          dropdown_button_id="ctl00_ContentPlaceHolderDatos_CbDesglose_B-1",
-                                          dropdown_container_id='ctl00_ContentPlaceHolderDatos_CbDesglose_DDD_L_D',
-                                          value="CARRIL")
+                    if option == 'por_minutos':
+                        # Select 'Desglose' value == 5 (MINUTOS)
+                        select_dropdown_value(driver,
+                                            dropdown_button_id="ctl00_ContentPlaceHolderDatos_CbDesgloseMinutos_B-1",
+                                            dropdown_container_id='ctl00_ContentPlaceHolderDatos_CbDesgloseMinutos_DDD_L_D',
+                                            value="5")
+                    elif option == 'por_horas':
+                        # Select 'Desglose' value == CARRIL
+                        select_dropdown_value(driver,
+                                            dropdown_button_id="ctl00_ContentPlaceHolderDatos_CbDesglose_B-1",
+                                            dropdown_container_id='ctl00_ContentPlaceHolderDatos_CbDesglose_DDD_L_D',
+                                            value="CARRIL")
 
                     sleep(1)
 
