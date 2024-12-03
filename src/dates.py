@@ -25,7 +25,23 @@ def get_hours(n):
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
 ######## Get days between two dates by hours
 
-#################
+def get_hours_between(start_date, end_date):
+
+    # Parse the input dates
+    start = datetime.strptime(start_date, "%d/%m/%Y")
+    end = datetime.strptime(end_date, "%d/%m/%Y")
+    
+    # Include the 00:00:00 of the day after the end_date
+    end = end + timedelta(days=1)
+
+    # Generate the hourly timestamps
+    hours = []
+    current_time = start
+    while current_time <= end:
+        hours.append(current_time.strftime("%d/%m/%Y %H:%M:%S"))
+        current_time += timedelta(hours=1)
+
+    return hours
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
 #---------------------------------------------------------------------- POR HORAS ---------------------------------------------------------------------#
@@ -87,13 +103,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-import time
-
-def select_date(driver, date_picker_id, date_str):
+def select_date(driver, date_picker_id, date_str, option='por_horas'):
     
     # Break down the date and time from the input string
     date, time_str = date_str.split()
@@ -108,6 +118,10 @@ def select_date(driver, date_picker_id, date_str):
     prev_month_button_id = f"{date_picker_base_id}_DDD_C_PMC"
     next_month_button_id = f"{date_picker_base_id}_DDD_C_NMC"
     day_cell_selector = f"#{date_picker_base_id}_DDD_C_mt td.dxeCalendarDay_Office2010Blue"
+    time_input_id = f"{date_picker_base_id}_DDD_C_TE_I"
+    increment_button_id = f"{date_picker_base_id}_DDD_C_TE_B-2"
+    decrement_button_id = f"{date_picker_base_id}_DDD_C_TE_B-3"
+    accept_button_id = f"{date_picker_base_id}_DDD_C_BO"
 
     #--- Click the calendar dropdown
     date_picker_button = driver.find_element(By.ID, date_picker_button_id)
@@ -153,6 +167,7 @@ def select_date(driver, date_picker_id, date_str):
         if displayed_year == year and displayed_month == month:
             break
         
+        ############### CREC QUE HE D'INCORPORAR ELS BOTONS DDD_C_PYC i _NYC (ara només utilitzo PMC i NMC)
         if displayed_year > year or (displayed_year == year and displayed_month > month):
             prev_month_button = driver.find_element(By.ID, prev_month_button_id)
             prev_month_button.click()
@@ -187,3 +202,30 @@ def select_date(driver, date_picker_id, date_str):
                 elif day > 15 and match_count == 2:
                     cell.click()
                     break
+
+    if option == 'por_minutos':
+        # --- Set the hour in the time input
+        # Get the current hour value
+        time_input = driver.find_element(By.ID, time_input_id)
+        current_hour = int(time_input.get_attribute("value").split(':')[0])  # Extract the hour part
+
+        # Calculate the shortest path to the desired hour
+        forward_steps = (hour - current_hour) % 24
+        backward_steps = (current_hour - hour) % 24
+
+        if forward_steps < backward_steps:
+            clicks = forward_steps
+            button_id = increment_button_id
+        else:
+            clicks = backward_steps
+            button_id = decrement_button_id
+
+        # Perform the clicks
+        for _ in range(clicks):
+            button = driver.find_element(By.ID, button_id)
+            button.click()
+            time.sleep(0.2)  # Small delay to allow UI to update
+
+        # --- Click 'Acceptar' button to close the calendar
+        from src.button import click_button
+        click_button(driver, button_id=accept_button_id)

@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
 ######## Given a 'demarcacion' and a list of 'etd', download every hour/day Excel 
 
-def download_data(driver, demarcacion, etd, option='por_horas'):
+def download_data(driver, demarcacion, etd, fecha_inicio, fecha_fin, option='por_horas'):
 
     if option == 'por_minutos':
         # Go to Aforos < Informes < Volumen Tráfico Agrupado
@@ -17,7 +17,7 @@ def download_data(driver, demarcacion, etd, option='por_horas'):
                       dropdown_container_id = 'ctl00_ContentPlaceHolderDatos_CbDemarcacion_DDD_L_D',
                       value = demarcacion)
 
-    from src.dates import get_days, get_dates_between, select_date
+    from src.dates import get_hours, get_hours_between, get_days, get_days_between, select_date
     from src.button import click_button, download_excel
     from src.utils import print_elapsed_time, check_no_data_message, is_page_blocked
     from selenium.webdriver.support.ui import WebDriverWait
@@ -30,17 +30,17 @@ def download_data(driver, demarcacion, etd, option='por_horas'):
 
     # Get dates depending on parameter 'option'
     if option == 'por_minutos':
-        start = '01/11/2024' # descarregar un interval concret
-        send = '07/11/2024'
-        dates = get_hours_between(start, end)
+        #start = '01/11/2024' # descarregar un interval concret
+        #end = '07/11/2024'
+        dates = get_hours_between(fecha_inicio, fecha_fin)
     elif option == 'por_horas':
         # dates = get_days(1) # descarregar 1 dia
         # dates = get_days(7) # descarregar 1 setmana
         # dates = get_days(datetime.datetime.now().timetuple().tm_yday + 1) # descarrgar 1 any sencer
         # dates = get_days(30) # descarregar els últims 30 dies
-        # start = '01/09/2024' # descarregar un interval concret
-        # end = '30/09/2024'
-        # dates = get_days_between(start, end) 
+        #start = '01/09/2024' # descarregar un interval concret
+        #end = '30/09/2024'
+        dates = get_days_between(fecha_inicio, fecha_fin) 
 
     for value_to_select_etd in etd:
 
@@ -64,20 +64,22 @@ def download_data(driver, demarcacion, etd, option='por_horas'):
                     # Initial/End date selector
                     select_date(driver,
                                 date_picker_id='LbFechaInicio_I',
-                                date_str=dates[i])
+                                date_str=dates[i],
+                                option=option)
 
                     select_date(driver,
                                 date_picker_id='LbFechaFin_I',
-                                date_str=dates[i + 1])
+                                date_str=dates[i + 1],
+                                option=option)
 
                     sleep(1)
 
                     if option == 'por_minutos':
-                        # Select 'Desglose' value == 5 (MINUTOS)
+                        # Select 'Desglose' value == 1 (MINUTOS)
                         select_dropdown_value(driver,
                                             dropdown_button_id="ctl00_ContentPlaceHolderDatos_CbDesgloseMinutos_B-1",
                                             dropdown_container_id='ctl00_ContentPlaceHolderDatos_CbDesgloseMinutos_DDD_L_D',
-                                            value="5")
+                                            value="1")
                     elif option == 'por_horas':
                         # Select 'Desglose' value == CARRIL
                         select_dropdown_value(driver,
@@ -127,7 +129,7 @@ def download_data(driver, demarcacion, etd, option='por_horas'):
 
                     else:
                         # Print message when the ETD has no data
-                        print(f"La ETD {value_to_select_etd} no conté dades a la seva taula. No es baixarà cap document Excel.")
+                        print(f"No s'han trobat dades per {value_to_select_etd}{dates[i]}.")
                         break  # No data, no need to retry
 
                 except Exception as e:

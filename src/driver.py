@@ -9,8 +9,8 @@ from private.config import FIREFOX_PATH
 
 def setup_driver():
 
-    # driver's directory (every os.pardir mean "../")
-    driver_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir, os.pardir, os.pardir))
+    # driver's directory (os.pardir mean "../")
+    driver_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 
     # driver's path
     driver_path = os.path.join(driver_dir, 'bin', 'geckodriver.exe')
