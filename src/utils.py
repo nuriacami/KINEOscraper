@@ -33,3 +33,20 @@ def is_page_blocked(driver):
         return blocked_image is not None
     except:
         return False
+
+#------------------------------------------------------------------------------------------------------------------------------------------------------#
+######## Checks if the download is complete
+
+import os
+
+def is_download_complete(download_path, initial_file_count):
+
+    while True:
+        # Count the files in the download folder
+        current_file_count = len(os.listdir(download_path))
+        
+        # If the file count has increased, assume the download is complete
+        if current_file_count > initial_file_count:
+            return True
+
+        time.sleep(60)

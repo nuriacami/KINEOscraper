@@ -17,13 +17,19 @@ def move_to_directory(origin, destination):
 	#             shutil.rmtree(file_path)  # Delete the directory
 	#     except Exception as e:
 	#         print(f'Error deleting file {file_path}: {e}')
-	            
-	# Compile the regex to match the file name pattern
-	pattern = re.compile(r"InformeAforosPorHorasCalzadaCarril\d+_\d+_\d+\.xlsx")
 
-	# Iterate over the files in the downloads directory
-	for filename in os.listdir(origin):
-	    if pattern.match(filename):
-	        # Move the file to the destination directory
-	        shutil.move(os.path.join(origin, filename), destination)
-	return
+
+    # Compile the regex patterns
+    patterns = [
+        re.compile(r"InformeAforosPorHorasCalzadaCarril\d+_\d+_\d+\.xlsx"),
+        re.compile(r"VolumneTraficoAgrupado\d+_\d+_\d+\.Xlsx")
+    ]
+    
+    # Iterate over the files in the origin directory
+    for filename in os.listdir(origin):
+        # Check if the filename matches any of the patterns
+        if any(pattern.match(filename) for pattern in patterns):
+            # Move the file to the destination directory
+            shutil.move(os.path.join(origin, filename), destination)
+
+    return

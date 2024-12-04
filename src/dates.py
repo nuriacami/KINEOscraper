@@ -1,11 +1,36 @@
-#------------------------------------------------------------------------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------- POR MINUTOS --------------------------------------------------------------------#
+#################
+def get_months_between(start_date, end_date):
+    # Convertim les dates passades com a strings a objectes datetime
+    start = datetime.strptime(start_date, '%d/%m/%Y')
+    end = datetime.strptime(end_date, '%d/%m/%Y')
+
+    # Ens assegurem que la data d'inici sigui anterior o igual a la data final
+    if start > end:
+        start, end = end, start
+
+    # Incrementem un mes la data final
+    end_month = (end.month % 12) + 1
+    end_year = end.year + (end.month // 12)
+    end = datetime(end_year, end_month, 1)
+
+    # Generem la llista de mesos
+    months = []
+    current = start.replace(day=1)
+    while current <= end:
+        months.append(current.strftime('%d/%m/%Y 00:00:00'))
+        # Incrementem al mes següent
+        next_month = (current.month % 12) + 1
+        next_year = current.year + (current.month // 12)
+        current = current.replace(year=next_year, month=next_month)
+
+    return months
+
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
 ######## Get last n days by hours
 
 from datetime import datetime, timedelta
 
-def get_hours(n):
+def get_last_hours(n):
     # Today's date at 00:00
     today = datetime.now()
     today_00 = datetime(today.year, today.month, today.day)
@@ -44,11 +69,9 @@ def get_hours_between(start_date, end_date):
     return hours
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
-#---------------------------------------------------------------------- POR HORAS ---------------------------------------------------------------------#
-#------------------------------------------------------------------------------------------------------------------------------------------------------#
 ######## Get last n days
 
-def get_days(n):
+def get_last_days(n):
 
     # Increment number of days in 1
     n = n + 1 
@@ -70,30 +93,43 @@ def get_days(n):
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
 ######## Get days between two dates
 
-def get_days_between(start_date_str, end_date_str):
+def get_days_between(start_date, end_date):
 
-    # Increment one day end_date_str
-    end_date = datetime.strptime(end_date_str, '%d/%m/%Y') + timedelta(days=1)
-    end_date_str = end_date.strftime('%d/%m/%Y')
+    # Increment one day end_date
+    end_date = datetime.strptime(end_date, '%d/%m/%Y') + timedelta(days=1)
+    end_date = end_date.strftime('%d/%m/%Y')
 
     # Convert the dates passed as strings to datetime objects
-    start_date = datetime.strptime(start_date_str, '%d/%m/%Y')
-    end_date = datetime.strptime(end_date_str, '%d/%m/%Y')
+    start = datetime.strptime(start_date, '%d/%m/%Y')
+    end = datetime.strptime(end_date, '%d/%m/%Y')
     
     # Ensure the start date is the earlier date
-    if start_date > end_date:
-        start_date, end_date = end_date, start_date
+    if start > end:
+        start, end = end, start
     
     # Generate the list of dates between the given start and end dates, inclusive
-    num_days = (end_date - start_date).days
-    dates = [start_date + timedelta(days=i) for i in range(num_days + 1)]
+    num_days = (end - start).days
+    dates = [start + timedelta(days=i) for i in range(num_days + 1)]
     
     # Convert the datetime objects to the desired format
     dates_str = [date.strftime('%d/%m/%Y 00:00:00') for date in dates]
 
     return dates_str
 
-########################################################################################################################################################
+#------------------------------------------------------------------------------------------------------------------------------------------------------#
+######## Set [fecha_inicio, fecha_fin] from download_data as the unique date interval
+
+def get_days(start_date, end_date):
+
+    # Parse the input dates and convert to the desired format
+    start = datetime.strptime(start_date, "%d/%m/%Y").strftime('%d/%m/%Y 00:00:00')
+    end = datetime.strptime(end_date, "%d/%m/%Y").strftime('%d/%m/%Y 00:00:00')
+
+    # Convert to vector
+    dates = [start, end]
+
+    return dates
+
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
 ######## Date selector
 
@@ -103,7 +139,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
-def select_date(driver, date_picker_id, date_str, option='por_horas'):
+def select_date(driver, date_picker_id, date_str, choice='por_horas'):
     
     # Break down the date and time from the input string
     date, time_str = date_str.split()
@@ -117,6 +153,8 @@ def select_date(driver, date_picker_id, date_str, option='por_horas'):
     calendar_title_id = f"{date_picker_base_id}_DDD_C_T"
     prev_month_button_id = f"{date_picker_base_id}_DDD_C_PMC"
     next_month_button_id = f"{date_picker_base_id}_DDD_C_NMC"
+    prev_year_button_id = f"{date_picker_base_id}_DDD_C_PYC"
+    next_year_button_id = f"{date_picker_base_id}_DDD_C_NYC"
     day_cell_selector = f"#{date_picker_base_id}_DDD_C_mt td.dxeCalendarDay_Office2010Blue"
     time_input_id = f"{date_picker_base_id}_DDD_C_TE_I"
     increment_button_id = f"{date_picker_base_id}_DDD_C_TE_B-2"
@@ -138,7 +176,7 @@ def select_date(driver, date_picker_id, date_str, option='por_horas'):
     last_valid_month_year = None
 
     while True:
-        # Try to get the value of month/year with a maximum number of attempts
+        # Try to get the value of the month/year with a maximum number of attempts
         while attempt < max_attempts:
             displayed_month_year = driver.find_element(By.ID, calendar_title_id).text
             if displayed_month_year.strip():  # Check that the text is not empty
@@ -146,7 +184,7 @@ def select_date(driver, date_picker_id, date_str, option='por_horas'):
                 break
             time.sleep(1)  # Wait before trying again
             attempt += 1
-        
+
         # If after the attempts the text is still empty, use the last valid value
         if not displayed_month_year.strip():
             if last_valid_month_year is not None:
@@ -163,19 +201,35 @@ def select_date(driver, date_picker_id, date_str, option='por_horas'):
         }[displayed_month]
         displayed_year = int(displayed_year)
 
-        # Move back and forth using the calendar arrows
+        # Check if we are already at the desired month and year
         if displayed_year == year and displayed_month == month:
             break
-        
-        ############### CREC QUE HE D'INCORPORAR ELS BOTONS DDD_C_PYC i _NYC (ara només utilitzo PMC i NMC)
-        if displayed_year > year or (displayed_year == year and displayed_month > month):
-            prev_month_button = driver.find_element(By.ID, prev_month_button_id)
-            prev_month_button.click()
+
+        # Calculate the difference in years and months
+        year_diff = year - displayed_year
+        month_diff = month - displayed_month + (year_diff * 12)
+
+        # Decide the optimal movement
+        if abs(year_diff) > 1 or (abs(year_diff) == 1 and abs(month_diff) > 6):
+            # Move by years if there's more than one year difference or it's shorter
+            if year_diff > 0:
+                next_year_button = driver.find_element(By.ID, next_year_button_id)
+                next_year_button.click()
+            else:
+                prev_year_button = driver.find_element(By.ID, prev_year_button_id)
+                prev_year_button.click()
+        elif abs(month_diff) > 0:
+            # Move by months when the difference is less than a year
+            if month_diff > 0:
+                next_month_button = driver.find_element(By.ID, next_month_button_id)
+                next_month_button.click()
+            else:
+                prev_month_button = driver.find_element(By.ID, prev_month_button_id)
+                prev_month_button.click()
         else:
-            next_month_button = driver.find_element(By.ID, next_month_button_id)
-            next_month_button.click()
-        
-        time.sleep(1)  # Add a pause to allow the calendar to load
+            raise ValueError("Unknown error in calendar movement.")
+
+        time.sleep(0.2)  ## Small delay to allow UI to update
 
     #--- Click the desired day
     # Get all the days of the month  
@@ -203,7 +257,7 @@ def select_date(driver, date_picker_id, date_str, option='por_horas'):
                     cell.click()
                     break
 
-    if option == 'por_minutos':
+    if choice == 'por_minutos':
         # --- Set the hour in the time input
         # Get the current hour value
         time_input = driver.find_element(By.ID, time_input_id)
@@ -229,3 +283,6 @@ def select_date(driver, date_picker_id, date_str, option='por_horas'):
         # --- Click 'Acceptar' button to close the calendar
         from src.button import click_button
         click_button(driver, button_id=accept_button_id)
+
+
+

@@ -1,12 +1,12 @@
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
 ######## Given a 'demarcacion' and a list of 'etd', download every hour/day Excel 
 
-def download_data(driver, demarcacion, etd, fecha_inicio, fecha_fin, option='por_horas'):
+def download_data(driver, demarcacion, etd, fecha_inicio, fecha_fin, choice = 'por_horas', desglose = None, clock = None):
 
-    if option == 'por_minutos':
+    if choice == 'por_minutos':
         # Go to Aforos < Informes < Volumen Tráfico Agrupado
         driver.get('https://aforadores.mitma.es/contadorestraficofomento/InformeVolumenTraficoAgrupadoAforo.aspx')
-    elif option == 'por_horas': 
+    elif choice == 'por_horas': 
         # Go to Aforos < Informes < Volumen Medio por Horas
         driver.get('https://aforadores.mitma.es/contadorestraficofomento/InformePorHorasCalzadaCarrilAforo.aspx')
 
@@ -17,8 +17,8 @@ def download_data(driver, demarcacion, etd, fecha_inicio, fecha_fin, option='por
                       dropdown_container_id = 'ctl00_ContentPlaceHolderDatos_CbDemarcacion_DDD_L_D',
                       value = demarcacion)
 
-    from src.dates import get_hours, get_hours_between, get_days, get_days_between, select_date
-    from src.button import click_button, download_excel
+    from src.dates import get_last_hours, get_hours_between, get_last_days, get_days_between, get_days, select_date
+    from src.button import click_button, download_excel_button
     from src.utils import print_elapsed_time, check_no_data_message, is_page_blocked
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.support import expected_conditions as EC
@@ -26,18 +26,21 @@ def download_data(driver, demarcacion, etd, fecha_inicio, fecha_fin, option='por
     from selenium.common.exceptions import TimeoutException
     from selenium.webdriver.common.keys import Keys
     from time import sleep
-    import datetime
+    import datetime 
 
-    # Get dates depending on parameter 'option'
-    if option == 'por_minutos':
-        #start = '01/11/2024' # descarregar un interval concret
-        #end = '07/11/2024'
-        dates = get_hours_between(fecha_inicio, fecha_fin)
-    elif option == 'por_horas':
-        # dates = get_days(1) # descarregar 1 dia
-        # dates = get_days(7) # descarregar 1 setmana
-        # dates = get_days(datetime.datetime.now().timetuple().tm_yday + 1) # descarrgar 1 any sencer
-        # dates = get_days(30) # descarregar els últims 30 dies
+    # Get dates depending on parameter 'choice'
+    if choice == 'por_minutos':
+        if clock == 'hour':
+            dates = get_hours_between(fecha_inicio, fecha_fin)
+        elif clock == 'day':
+            dates = get_days_between(fecha_inicio, fecha_fin)
+        elif clock == None:
+            dates = get_days(fecha_inicio, fecha_fin) 
+    elif choice == 'por_horas':
+        # dates = get_last_days(1) # descarregar 1 dia
+        # dates = get_last_days(7) # descarregar 1 setmana
+        # dates = get_last_days(datetime.datetime.now().timetuple().tm_yday + 1) # descarrgar 1 any sencer
+        # dates = get_last_days(30) # descarregar els últims 30 dies
         #start = '01/09/2024' # descarregar un interval concret
         #end = '30/09/2024'
         dates = get_days_between(fecha_inicio, fecha_fin) 
@@ -65,23 +68,23 @@ def download_data(driver, demarcacion, etd, fecha_inicio, fecha_fin, option='por
                     select_date(driver,
                                 date_picker_id='LbFechaInicio_I',
                                 date_str=dates[i],
-                                option=option)
+                                choice=choice)
 
                     select_date(driver,
                                 date_picker_id='LbFechaFin_I',
                                 date_str=dates[i + 1],
-                                option=option)
+                                choice=choice)
 
                     sleep(1)
 
-                    if option == 'por_minutos':
-                        # Select 'Desglose' value == 1 (MINUTOS)
+                    if choice == 'por_minutos':
+                        # Select 'Desglose' 
                         select_dropdown_value(driver,
                                             dropdown_button_id="ctl00_ContentPlaceHolderDatos_CbDesgloseMinutos_B-1",
                                             dropdown_container_id='ctl00_ContentPlaceHolderDatos_CbDesgloseMinutos_DDD_L_D',
-                                            value="1")
-                    elif option == 'por_horas':
-                        # Select 'Desglose' value == CARRIL
+                                            value=desglose)
+                    elif choice == 'por_horas':
+                        # Select 'Desglose' 
                         select_dropdown_value(driver,
                                             dropdown_button_id="ctl00_ContentPlaceHolderDatos_CbDesglose_B-1",
                                             dropdown_container_id='ctl00_ContentPlaceHolderDatos_CbDesglose_DDD_L_D',
@@ -110,19 +113,17 @@ def download_data(driver, demarcacion, etd, fecha_inicio, fecha_fin, option='por
                             break
 
                     sleep(2)
-
+                    
                     # While message "No hay datos para mostrar" is not shown, Excel will be downloaded
                     if not check_no_data_message(driver):
-
+                        
                         # Zoom out to 80% in order to make download Excel button visible
                         driver.execute_script(
                             "document.body.style.transform='scale(0.8)'; document.body.style.transformOrigin='0 0';")
-
+                        
                         # Click to download Excel button
-                        download_excel(driver,
-                                       button_id="ctl00_ContentPlaceHolderDatos_BtExcel_I")
-
-                        sleep(2)  # Wait till download is completed
+                        download_excel_button(driver,
+                                            button_id="ctl00_ContentPlaceHolderDatos_BtExcel_I")
                         
                         # Exit the retry loop as the download succeeded
                         break

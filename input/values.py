@@ -1,10 +1,3 @@
-VALUES_gerard_prova = [
-    {
-        'demarcacion': 'AP7 BARCELONA SECTOR 4', 
-        'etd': ['AP7-125+650-100270000000']
-    }
-]
-
 VALUES_gerard = [
     {
         'demarcacion': 'AP7 BARCELONA SECTOR 4', 
