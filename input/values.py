@@ -1,8 +1,8 @@
 VALUES_gerard = [
     {
-        'demarcacion': 'AP7 BARCELONA SECTOR 4', 
-        'etd': ['AP7-125+650-100270000000']
-    }, {
+    #    'demarcacion': 'AP7 BARCELONA SECTOR 4', 
+    #    'etd': ['AP7-125+650-100270000000']
+    #}, {
         'demarcacion': 'AP7 BARCELONA SECTOR 4', 
         'etd': ['AP7-129+500-100280000000']
     }, {
