@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
 ######## Given a 'demarcacion' and a list of 'etd', download every hour/day Excel 
 
-def download_data(driver, demarcacion, etd, fecha_inicio, fecha_fin, choice = 'por_horas', desglose = None, clock = None):
+def download_data(driver, demarcacion, etd, fecha_inicio, fecha_fin, choice = 'por_minutos', desglose = None, clock = None):
 
     if choice == 'por_minutos':
         # Go to Aforos < Informes < Volumen Tráfico Agrupado
@@ -17,7 +17,7 @@ def download_data(driver, demarcacion, etd, fecha_inicio, fecha_fin, choice = 'p
                       dropdown_container_id = 'ctl00_ContentPlaceHolderDatos_CbDemarcacion_DDD_L_D',
                       value = demarcacion)
 
-    from src.dates import get_last_hours, get_hours_between, get_last_days, get_days_between, get_days, select_date
+    from src.dates import  get_days, get_hours_between, get_days_between, get_months_between,select_date
     from src.button import click_button, download_excel_button
     from src.utils import print_elapsed_time, check_no_data_message, is_page_blocked
     from selenium.webdriver.support.ui import WebDriverWait
@@ -34,6 +34,10 @@ def download_data(driver, demarcacion, etd, fecha_inicio, fecha_fin, choice = 'p
             dates = get_hours_between(fecha_inicio, fecha_fin)
         elif clock == 'day':
             dates = get_days_between(fecha_inicio, fecha_fin)
+        elif clock == 'month':
+            dates = get_months_between(fecha_inicio, fecha_fin, n = 1)
+        elif clock == '2_months':
+            dates = get_months_between(fecha_inicio, fecha_fin, n = 2)
         elif clock == None:
             dates = get_days(fecha_inicio, fecha_fin) 
     elif choice == 'por_horas':

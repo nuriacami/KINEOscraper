@@ -1,54 +1,21 @@
-#################
-def get_months_between(start_date, end_date):
-    # Convertim les dates passades com a strings a objectes datetime
-    start = datetime.strptime(start_date, '%d/%m/%Y')
-    end = datetime.strptime(end_date, '%d/%m/%Y')
-
-    # Ens assegurem que la data d'inici sigui anterior o igual a la data final
-    if start > end:
-        start, end = end, start
-
-    # Incrementem un mes la data final
-    end_month = (end.month % 12) + 1
-    end_year = end.year + (end.month // 12)
-    end = datetime(end_year, end_month, 1)
-
-    # Generem la llista de mesos
-    months = []
-    current = start.replace(day=1)
-    while current <= end:
-        months.append(current.strftime('%d/%m/%Y 00:00:00'))
-        # Incrementem al mes següent
-        next_month = (current.month % 12) + 1
-        next_year = current.year + (current.month // 12)
-        current = current.replace(year=next_year, month=next_month)
-
-    return months
-
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
-######## Get last n days by hours
+######## Set [fecha_inicio, fecha_fin] from download_data as the unique date interval
 
 from datetime import datetime, timedelta
 
-def get_last_hours(n):
-    # Today's date at 00:00
-    today = datetime.now()
-    today_00 = datetime(today.year, today.month, today.day)
+def get_days(start_date, end_date):
 
-    # Calculate the starting point: `n` days before today
-    start_time = today_00 - timedelta(days=n)
+    # Parse the input dates and convert to the desired format
+    start = datetime.strptime(start_date, "%d/%m/%Y").strftime('%d/%m/%Y 00:00:00')
+    end = datetime.strptime(end_date, "%d/%m/%Y").strftime('%d/%m/%Y 00:00:00')
 
-    # Generate a list of hours from `start_time` to `today_00 + 1 hour`
-    hours = []
-    current_time = start_time
-    while current_time <= today_00:
-        hours.append(current_time.strftime("%d/%m/%Y %H:%M:%S"))
-        current_time += timedelta(hours=1)
+    # Convert to vector
+    dates = [start, end]
 
-    return hours
+    return dates
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
-######## Get days between two dates by hours
+######## Get days by hours between two dates
 
 def get_hours_between(start_date, end_date):
 
@@ -67,28 +34,6 @@ def get_hours_between(start_date, end_date):
         current_time += timedelta(hours=1)
 
     return hours
-
-#------------------------------------------------------------------------------------------------------------------------------------------------------#
-######## Get last n days
-
-def get_last_days(n):
-
-    # Increment number of days in 1
-    n = n + 1 
-
-    # Get today's date
-    today = datetime.now()
-    
-    # Generate the list of the last n days as datetime objects
-    dates = [today - timedelta(days=i) for i in range(n)]
-    
-    # Sort the list of datetime objects from the oldest to the newest
-    sorted_dates = sorted(dates)
-
-    # Convert the sorted datetime objects to the desired string format
-    sorted_dates_str = [date.strftime('%d/%m/%Y 00:00:00') for date in sorted_dates]
-
-    return sorted_dates_str
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
 ######## Get days between two dates
@@ -115,20 +60,30 @@ def get_days_between(start_date, end_date):
     dates_str = [date.strftime('%d/%m/%Y 00:00:00') for date in dates]
 
     return dates_str
-
+    
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
-######## Set [fecha_inicio, fecha_fin] from download_data as the unique date interval
+######## Get months between two dates
 
-def get_days(start_date, end_date):
+def get_months_between(start_date, end_date, n=1):
+    # Convert the dates passed as strings to datetime objects
+    start = datetime.strptime(start_date, '%d/%m/%Y')
+    end = datetime.strptime(end_date, '%d/%m/%Y')
 
-    # Parse the input dates and convert to the desired format
-    start = datetime.strptime(start_date, "%d/%m/%Y").strftime('%d/%m/%Y 00:00:00')
-    end = datetime.strptime(end_date, "%d/%m/%Y").strftime('%d/%m/%Y 00:00:00')
+    # Ensure the start date is earlier or equal to the end date
+    if start > end:
+        start, end = end, start
 
-    # Convert to vector
-    dates = [start, end]
+    # Generate the list of months with the specified interval
+    months = []
+    current = start.replace(day=1)
+    while current <= end:
+        months.append(current.strftime('%d/%m/%Y 00:00:00'))
+        # Move to the next month with the specified interval
+        next_month = (current.month - 1 + n) % 12 + 1
+        next_year = current.year + (current.month - 1 + n) // 12
+        current = current.replace(year=next_year, month=next_month)
 
-    return dates
+    return months
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
 ######## Date selector
@@ -285,4 +240,48 @@ def select_date(driver, date_picker_id, date_str, choice='por_horas'):
         click_button(driver, button_id=accept_button_id)
 
 
+###################################################################### DEPRACATED ###################################################################### 
 
+# #------------------------------------------------------------------------------------------------------------------------------------------------------#
+# ######## Get last n days by hours
+
+# from datetime import datetime, timedelta
+
+# def get_last_hours(n):
+#     # Today's date at 00:00
+#     today = datetime.now()
+#     today_00 = datetime(today.year, today.month, today.day)
+
+#     # Calculate the starting point: `n` days before today
+#     start_time = today_00 - timedelta(days=n)
+
+#     # Generate a list of hours from `start_time` to `today_00 + 1 hour`
+#     hours = []
+#     current_time = start_time
+#     while current_time <= today_00:
+#         hours.append(current_time.strftime("%d/%m/%Y %H:%M:%S"))
+#         current_time += timedelta(hours=1)
+
+#     return hours
+
+# #------------------------------------------------------------------------------------------------------------------------------------------------------#
+# ######## Get last n days
+
+# def get_last_days(n):
+
+#     # Increment number of days in 1
+#     n = n + 1 
+
+#     # Get today's date
+#     today = datetime.now()
+    
+#     # Generate the list of the last n days as datetime objects
+#     dates = [today - timedelta(days=i) for i in range(n)]
+    
+#     # Sort the list of datetime objects from the oldest to the newest
+#     sorted_dates = sorted(dates)
+
+#     # Convert the sorted datetime objects to the desired string format
+#     sorted_dates_str = [date.strftime('%d/%m/%Y 00:00:00') for date in sorted_dates]
+
+#     return sorted_dates_str
