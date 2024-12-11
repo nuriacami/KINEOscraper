@@ -19,7 +19,7 @@ def download_data(driver, demarcacion, etd, fecha_inicio, fecha_fin, choice = 'p
 
     from src.dates import  get_days, get_hours_between, get_days_between, get_months_between,select_date
     from src.button import click_button, download_excel_button
-    from src.utils import print_elapsed_time, check_no_data_message, is_page_blocked
+    from src.utils import print_elapsed_time, check_no_data_message, is_page_blocked, has_session_expired
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.support import expected_conditions as EC
     from selenium.webdriver.common.by import By
@@ -134,7 +134,7 @@ def download_data(driver, demarcacion, etd, fecha_inicio, fecha_fin, choice = 'p
 
                     else:
                         # Print message when the ETD has no data
-                        print(f"No s'han trobat dades per {value_to_select_etd}{dates[i]}.")
+                        print(f"No s'han trobat dades per la ETD {value_to_select_etd} {dates[i]}.")
                         break  # No data, no need to retry
 
                 except Exception as e:
@@ -143,8 +143,12 @@ def download_data(driver, demarcacion, etd, fecha_inicio, fecha_fin, choice = 'p
                         driver.refresh()  # Refresh the page if blocked
                         sleep(5)  # Allow some time for the page to reload
                         retry_count += 1  # Increment the retry counter
+                    elif has_session_expired(driver):
+                        print(f"Sessió expirada detectada. Reintentant... (Intent {retry_count + 1})")
+                        print(f"Intent fallit a la ETD: {value_to_select_etd}, fecha_inicio: {dates[i]}, fecha_fin: {dates[i + 1]}")
                     else:
-                        raise e  # Rethrow the exception if it's not related to the blocked page
+                        raise e  # Rethrow the exception if it's not related to the blocked page or expired session
+                        print("Hi ha hagut algun altre tipus d'error.")
 
             if retry_count == max_retries:
                 print(f"No s'ha pogut descarregar l'Excel després de {max_retries} intents.")

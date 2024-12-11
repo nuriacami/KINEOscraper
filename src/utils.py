@@ -24,7 +24,7 @@ def check_no_data_message(driver):
     return False
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
-######## Define a function to check for the blocked page
+######## Check for the blocked page
 
 def is_page_blocked(driver):
     try:
@@ -34,6 +34,22 @@ def is_page_blocked(driver):
     except:
         return False
 
+#------------------------------------------------------------------------------------------------------------------------------------------------------#
+######## Check if the session has expired
+
+from selenium.common.exceptions import NoSuchElementException
+
+def has_session_expired(driver):
+    try:
+        # Find the element with id 'LbTituloLabel'
+        element = driver.find_element(By.ID, "LbTituloLabel")
+        # Verify that the text is exactly 'TIEMPO DE SESIÓN EXPIRADO'
+        if element.text.strip() == "TIEMPO DE SESIÓN EXPIRADO":
+            return True
+        return False
+    except NoSuchElementException:
+        return False
+        
 #------------------------------------------------------------------------------------------------------------------------------------------------------#
 ######## Checks if the download is complete
 

@@ -1,65 +1,69 @@
+VALUES_gerard2 = [
+    {'demarcacion': 'AP7 BARCELONA SECTOR 5', 
+        'etd': ['AP7-183+000-100440000000']}]
+
 VALUES_gerard = [
     {
-    #    'demarcacion': 'AP7 BARCELONA SECTOR 4', 
-    #    'etd': ['AP7-125+650-100270000000']
-    #}, {
-        'demarcacion': 'AP7 BARCELONA SECTOR 4', 
-        'etd': ['AP7-129+500-100280000000']
-    }, {
-        'demarcacion': 'AP7 BARCELONA SECTOR 4', 
-        'etd': ['AP7-134+050-100290000000']
-    }, {
-        'demarcacion': 'AP7 BARCELONA SECTOR 4', 
-        'etd': ['AP7-137+000-110300000000']
-    }, {
-        'demarcacion': 'AP7 BARCELONA SECTOR 4', 
-        'etd': ['AP7-137+000-120300000000']
-    }, {
-        'demarcacion': 'AP7 BARCELONA SECTOR 4', 
-        'etd': ['AP7-139+000-100310000000']
-    }, {
-        'demarcacion': 'AP7 BARCELONA SECTOR 4', 
-        'etd': ['AP7-140+850-110340000000']
-    }, {
-        'demarcacion': 'AP7 BARCELONA SECTOR 4', 
-        'etd': ['AP7-140+850-120340000000']
-    }, {
-        'demarcacion': 'AP7 BARCELONA SECTOR 4', 
-        'etd': ['AP7-143+000-110350000000']
-    }, {
-        'demarcacion': 'AP7 BARCELONA SECTOR 4', 
-        'etd': ['AP7-143+000-120350000000']
-    }, {
-        'demarcacion': 'AP7 BARCELONA SECTOR 4', 
-        'etd': ['AP7-144+950-110360000000']
-    }, {
-        'demarcacion': 'AP7 BARCELONA SECTOR 4', 
-        'etd': ['AP7-144+950-120360000000']
-    }, {
-        'demarcacion': 'AP7 BARCELONA SECTOR 4', 
-        'etd': ['AP7-147+000-110370000000']
-    }, {
-        'demarcacion': 'AP7 BARCELONA SECTOR 4', 
-        'etd': ['AP7-146+270-120370000000']
-    }, {
-        'demarcacion': 'AP7 BARCELONA SECTOR 5', 
-        'etd': ['AP7-155+800-100400000000']
-    }, {
-        'demarcacion': 'AP7 BARCELONA SECTOR 5', 
-        'etd': ['AP7-173+000-100430000000']
-    }, {
-        'demarcacion': 'AP7 BARCELONA SECTOR 5', 
-        'etd': ['AP7-148+700-100380000000']
-    }, {
-        'demarcacion': 'AP7 BARCELONA SECTOR 5', 
-        'etd': ['AP7-153+600-100390000000']
-    }, {
-        'demarcacion': 'AP7 BARCELONA SECTOR 5', 
-        'etd': ['AP7-164+500-100420000000']
-    }, {
-        'demarcacion': 'AP7 BARCELONA SECTOR 5', 
-        'etd': ['AP7-183+000-100440000000']
-    }, {
+    #     'demarcacion': 'AP7 BARCELONA SECTOR 4', 
+    #     'etd': ['AP7-125+650-100270000000']
+    # }, {
+    #     'demarcacion': 'AP7 BARCELONA SECTOR 4', 
+    #     'etd': ['AP7-129+500-100280000000']
+    # }, {
+    #     'demarcacion': 'AP7 BARCELONA SECTOR 4', 
+    #     'etd': ['AP7-134+050-100290000000']
+    # }, {
+    #     'demarcacion': 'AP7 BARCELONA SECTOR 4', 
+    #     'etd': ['AP7-137+000-110300000000']
+    # }, {
+    #     'demarcacion': 'AP7 BARCELONA SECTOR 4', 
+    #     'etd': ['AP7-137+000-120300000000']
+    # }, {
+    #     'demarcacion': 'AP7 BARCELONA SECTOR 4', 
+    #     'etd': ['AP7-139+000-100310000000']
+    # }, {
+    #     'demarcacion': 'AP7 BARCELONA SECTOR 4', 
+    #     'etd': ['AP7-140+850-110340000000']
+    # }, {
+    #     'demarcacion': 'AP7 BARCELONA SECTOR 4', 
+    #     'etd': ['AP7-140+850-120340000000']
+    # }, {
+    #     'demarcacion': 'AP7 BARCELONA SECTOR 4', 
+    #     'etd': ['AP7-143+000-110350000000']
+    # }, {
+    #     'demarcacion': 'AP7 BARCELONA SECTOR 4', 
+    #     'etd': ['AP7-143+000-120350000000']
+    # }, {
+    #     'demarcacion': 'AP7 BARCELONA SECTOR 4', 
+    #     'etd': ['AP7-144+950-110360000000']
+    # }, {
+    #     'demarcacion': 'AP7 BARCELONA SECTOR 4', 
+    #     'etd': ['AP7-144+950-120360000000']
+    # }, {
+    #     'demarcacion': 'AP7 BARCELONA SECTOR 4', 
+    #     'etd': ['AP7-147+000-110370000000']
+    # }, {
+    #     'demarcacion': 'AP7 BARCELONA SECTOR 4', 
+    #     'etd': ['AP7-146+270-120370000000']
+    # }, {
+    #     'demarcacion': 'AP7 BARCELONA SECTOR 5', 
+    #     'etd': ['AP7-155+800-100400000000']
+    # }, {
+    #     'demarcacion': 'AP7 BARCELONA SECTOR 5', 
+    #     'etd': ['AP7-173+000-100430000000']
+    # }, {
+    #     'demarcacion': 'AP7 BARCELONA SECTOR 5', 
+    #     'etd': ['AP7-148+700-100380000000']
+    # }, {
+    #     'demarcacion': 'AP7 BARCELONA SECTOR 5', 
+    #     'etd': ['AP7-153+600-100390000000']
+    # }, {
+    #     'demarcacion': 'AP7 BARCELONA SECTOR 5', 
+    #     'etd': ['AP7-164+500-100420000000']
+    # }, {
+    #     'demarcacion': 'AP7 BARCELONA SECTOR 5', 
+    #     'etd': ['AP7-183+000-100440000000']
+    # }, {
         'demarcacion': 'AP7 BARCELONA SECTOR 5', 
         'etd': ['AP7-195+900-100470000000']
     }, {

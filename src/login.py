@@ -38,8 +38,8 @@ def login(driver, url, username, password):
     
     # Wait until the next page's container is present
     WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.ID, "ctl00_ContentPlaceHolderDatos_PanelContainer"))
+        EC.presence_of_element_located((By.ID, "ctl00_ASPxImageLogo"))
     )
     
-    # Wait for 2 seconds
-    sleep(2)
+    # Wait for 1 second
+    sleep(1)

@@ -104,7 +104,7 @@ def select_date(driver, date_picker_id, date_str, choice='por_horas'):
     # Build the IDs based on the date_picker_id
     date_picker_base_id = "_".join(date_picker_id.split("_")[:-1])
     date_picker_button_id = f"{date_picker_base_id}_B-1"
-    calendar_id = f"{date_picker_base_id}_DDD_PWC-1"
+    calendar_id = f"{date_picker_base_id}_DDD_PW-1"
     calendar_title_id = f"{date_picker_base_id}_DDD_C_T"
     prev_month_button_id = f"{date_picker_base_id}_DDD_C_PMC"
     next_month_button_id = f"{date_picker_base_id}_DDD_C_NMC"
